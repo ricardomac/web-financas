@@ -17,21 +17,21 @@ export class LancamentoService {
     Listar(): Observable<Array<Lancamento>> {
         return this.http.get(this.caminhoApi).pipe(
             catchError(this.handleError),
-            map(this.jsonDadoslancamentos)
+            map(this.jsonDadosLancamentos)
         )
     }
 
     Buscar(id: number): Observable<Lancamento> {
         return this.http.get(`${this.caminhoApi}/${id}`).pipe(
             catchError(this.handleError),
-            map(this.jsonDadoslancamento)
+            map(this.jsonDadosLancamento)
         )
     }
 
     Salvar(lancamento: Lancamento): Observable<Lancamento> {
         return this.http.post(this.caminhoApi, lancamento).pipe(
             catchError(this.handleError),
-            map(this.jsonDadoslancamento)
+            map(this.jsonDadosLancamento)
         )
     }
 
@@ -51,13 +51,13 @@ export class LancamentoService {
 
 
     // Métodos Privados
-    private jsonDadoslancamentos(jsonDados: Array<any>): Array<Lancamento> {
+    private jsonDadosLancamentos(jsonDados: Array<any>): Array<Lancamento> {
         const lancamentos: Array<Lancamento> = [];
-        jsonDados.forEach(element => lancamentos.push(element as Lancamento));
+        jsonDados.forEach(element => lancamentos.push(Object.assign(new Lancamento(), element)));
         return lancamentos
     }
 
-    private jsonDadoslancamento(jsonDados: any): Lancamento {
+    private jsonDadosLancamento(jsonDados: any): Lancamento {
         return jsonDados as Lancamento;
     }
 

@@ -10,7 +10,8 @@ export class Lancamento {
         public data?: string,
         public pago?: boolean,
         public categoriaId?: number,
-        public categoria?: Categoria
+        public categoria?: Categoria,
+
     ) { }
 
     static tipos = {
