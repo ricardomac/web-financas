@@ -1,0 +1,151 @@
+<nav class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/lancamentos">Lancamentos</a></li>
+        <li class="breadcrumb-item active">{{tituloPagina}}</li>
+    </ol>
+</nav>
+
+<div class="row mb-4">
+    <div class="col-md-9">
+        <h1 class="h2 border-left pl-2">
+            {{tituloPagina}}
+        </h1>
+    </div>
+    <div class="col-md-3">
+        <a routerLink="/lancamentos" class="btn btn-light float-right">Voltar</a>
+    </div>
+</div>
+
+<form [formGroup]="lancamentoForm" (submit)="submitForm()">
+    <div class="card">
+        <div class="card-header">
+            Informações sobre o Lançamento
+        </div>
+
+        <div class="card-body">
+
+            <div class="form-row">
+
+                <div class="form-group col-md-2">
+                    <label for="tipo">Tipo</label>
+
+                    <select name="tipo" id="tipo" formControlName="tipo" class="form-control">
+                        <option *ngFor="let option of typeOptions" [value]="option.value">{{option.text}}</option>
+                    </select>
+
+                    <div class="text-danger"
+                        *ngIf="lancamentoForm.get('tipo').invalid && lancamentoForm.get('tipo').touched">
+                        <div *ngIf="lancamentoForm.get('tipo').errors.required">Campo obrigatório</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-5">
+                    <label for="nome">Lançamento</label>
+                    <input formControlName="nome" type="text" id="nome" class="form-control">
+
+                    <div class="text-danger"
+                        *ngIf="lancamentoForm.get('nome').invalid && lancamentoForm.get('nome').touched">
+                        <div *ngIf="lancamentoForm.get('nome').errors.required">Campo obrigatório</div>
+                        <div *ngIf="lancamentoForm.get('nome').errors.minlength">Deve ter no mínimo 2 caracteres</div>
+                    </div>
+
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="valor">Valor</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">R$</div>
+                        </div>
+                        <input [imask]="imaskConfig" type="text" name="valor" id="valor" formControlName="valor"
+                            class="form-control text-right">
+                    </div>
+
+                    <div class="text-danger"
+                        *ngIf="lancamentoForm.get('valor').invalid && lancamentoForm.get('valor').touched">
+                        <div *ngIf="lancamentoForm.get('valor').errors.required">Campo obrigatório</div>
+                    </div>
+
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="data">Data</label>
+                    <p-calendar id="data" formControlName="data" inputStyleClass="form-control" dataType="string"
+                        dateFormat="dd/mm/yy" [locale]="ptBR" [showButtonBar]="true">
+                    </p-calendar>
+
+                    <div class="text-danger"
+                        *ngIf="lancamentoForm.get('data').invalid && lancamentoForm.get('data').touched">
+                        <div *ngIf="lancamentoForm.get('data').errors.required">Campo obrigatório</div>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="form-row">
+
+
+                <div class="form-group col-md-2">
+                    <label for="valor">Pago</label>
+                    <div class="btn-group">
+                        <label (click)="lancamentoForm.get('pago').setValue(true)"
+                            [class.active]="lancamentoForm.get('pago').value == true" class="btn btn-outline-info">
+                            Pago
+                        </label>
+                        <label (click)="lancamentoForm.get('pago').setValue(false)"
+                            [class.active]="lancamentoForm.get('pago').value == false" class="btn btn-outline-info">
+                            Pendente
+                        </label>
+                    </div>
+
+                    <div class="text-danger"
+                        *ngIf="lancamentoForm.get('pago').invalid && lancamentoForm.get('pago').touched">
+                        <div *ngIf="lancamentoForm.get('pago').errors.required">Campo obrigatório</div>
+                    </div>
+
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="categoriaId">Categoria</label>
+
+                    <select name="categoriaId" id="categoriaId" formControlName="categoriaId" class="form-control">
+                        <option *ngFor="let categoria of categorias" [value]="categoria.id">{{categoria.nome}}</option>
+                    </select>
+
+                    <div class="text-danger"
+                        *ngIf="lancamentoForm.get('categoriaId').invalid && lancamentoForm.get('categoriaId').touched">
+                        <div *ngIf="lancamentoForm.get('categoriaId').errors.required">Campo obrigatório</div>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group col-md-7">
+                    <label for="descricao">Descrição</label>
+                    <input formControlName="descricao" type="text" id="descricao" class="form-control">
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div class="alert alert-danger mt-4" *ngIf="serverErrorMessages">
+        <strong>Error no servidor:</strong>
+        <ul>
+            <li *ngFor="let error of serverErrorMessages">{{error}}</li>
+        </ul>
+    </div>
+
+
+    <div class="float-right mt-3">
+        <button [disabled]="submittingForm || lancamentoForm.invalid" type="submit"
+            class="btn btn-primary btn-lg">Salvar</button>
+    </div>
+
+
+</form>
