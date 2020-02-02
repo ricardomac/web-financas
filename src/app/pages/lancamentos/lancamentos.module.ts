@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../../shared/shared.module';
+
 
 import { LancamentosRoutingModule } from './lancamentos-routing.module';
 
@@ -10,12 +10,12 @@ import { FormularioLancamentosComponent } from './formulario-lancamentos/formula
 import { CalendarModule } from 'primeng/calendar'
 import { IMaskModule } from "angular-imask"
 
+
 @NgModule({
   declarations: [ListaDeLancamentosComponent, FormularioLancamentosComponent],
   imports: [
-    CommonModule,
+    SharedModule,
     LancamentosRoutingModule,
-    ReactiveFormsModule,
     CalendarModule,
     IMaskModule
   ]
