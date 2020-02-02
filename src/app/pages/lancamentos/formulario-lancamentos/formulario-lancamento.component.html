@@ -17,7 +17,7 @@
     </div>
 </div>
 
-<form [formGroup]="lancamentoForm" (submit)="submitForm()">
+<form [formGroup]="resourceForm" (submit)="submitForm()">
     <div class="card">
         <div class="card-header">
             Informações sobre o Lançamento
@@ -35,8 +35,8 @@
                     </select>
 
                     <div class="text-danger"
-                        *ngIf="lancamentoForm.get('tipo').invalid && lancamentoForm.get('tipo').touched">
-                        <div *ngIf="lancamentoForm.get('tipo').errors.required">Campo obrigatório</div>
+                        *ngIf="resourceForm.get('tipo').invalid && resourceForm.get('tipo').touched">
+                        <div *ngIf="resourceForm.get('tipo').errors.required">Campo obrigatório</div>
                     </div>
                 </div>
 
@@ -45,9 +45,9 @@
                     <input formControlName="nome" type="text" id="nome" class="form-control">
 
                     <div class="text-danger"
-                        *ngIf="lancamentoForm.get('nome').invalid && lancamentoForm.get('nome').touched">
-                        <div *ngIf="lancamentoForm.get('nome').errors.required">Campo obrigatório</div>
-                        <div *ngIf="lancamentoForm.get('nome').errors.minlength">Deve ter no mínimo 2 caracteres</div>
+                        *ngIf="resourceForm.get('nome').invalid && resourceForm.get('nome').touched">
+                        <div *ngIf="resourceForm.get('nome').errors.required">Campo obrigatório</div>
+                        <div *ngIf="resourceForm.get('nome').errors.minlength">Deve ter no mínimo 2 caracteres</div>
                     </div>
 
                 </div>
@@ -63,8 +63,8 @@
                     </div>
 
                     <div class="text-danger"
-                        *ngIf="lancamentoForm.get('valor').invalid && lancamentoForm.get('valor').touched">
-                        <div *ngIf="lancamentoForm.get('valor').errors.required">Campo obrigatório</div>
+                        *ngIf="resourceForm.get('valor').invalid && resourceForm.get('valor').touched">
+                        <div *ngIf="resourceForm.get('valor').errors.required">Campo obrigatório</div>
                     </div>
 
                 </div>
@@ -76,8 +76,8 @@
                     </p-calendar>
 
                     <div class="text-danger"
-                        *ngIf="lancamentoForm.get('data').invalid && lancamentoForm.get('data').touched">
-                        <div *ngIf="lancamentoForm.get('data').errors.required">Campo obrigatório</div>
+                        *ngIf="resourceForm.get('data').invalid && resourceForm.get('data').touched">
+                        <div *ngIf="resourceForm.get('data').errors.required">Campo obrigatório</div>
                     </div>
 
                 </div>
@@ -91,19 +91,19 @@
                 <div class="form-group col-md-2">
                     <label for="valor">Pago</label>
                     <div class="btn-group">
-                        <label (click)="lancamentoForm.get('pago').setValue(true)"
-                            [class.active]="lancamentoForm.get('pago').value == true" class="btn btn-outline-info">
+                        <label (click)="resourceForm.get('pago').setValue(true)"
+                            [class.active]="resourceForm.get('pago').value == true" class="btn btn-outline-info">
                             Pago
                         </label>
-                        <label (click)="lancamentoForm.get('pago').setValue(false)"
-                            [class.active]="lancamentoForm.get('pago').value == false" class="btn btn-outline-info">
+                        <label (click)="resourceForm.get('pago').setValue(false)"
+                            [class.active]="resourceForm.get('pago').value == false" class="btn btn-outline-info">
                             Pendente
                         </label>
                     </div>
 
                     <div class="text-danger"
-                        *ngIf="lancamentoForm.get('pago').invalid && lancamentoForm.get('pago').touched">
-                        <div *ngIf="lancamentoForm.get('pago').errors.required">Campo obrigatório</div>
+                        *ngIf="resourceForm.get('pago').invalid && resourceForm.get('pago').touched">
+                        <div *ngIf="resourceForm.get('pago').errors.required">Campo obrigatório</div>
                     </div>
 
                 </div>
@@ -116,8 +116,8 @@
                     </select>
 
                     <div class="text-danger"
-                        *ngIf="lancamentoForm.get('categoriaId').invalid && lancamentoForm.get('categoriaId').touched">
-                        <div *ngIf="lancamentoForm.get('categoriaId').errors.required">Campo obrigatório</div>
+                        *ngIf="resourceForm.get('categoriaId').invalid && resourceForm.get('categoriaId').touched">
+                        <div *ngIf="resourceForm.get('categoriaId').errors.required">Campo obrigatório</div>
                     </div>
                 </div>
 
@@ -143,7 +143,7 @@
 
 
     <div class="float-right mt-3">
-        <button [disabled]="submittingForm || lancamentoForm.invalid" type="submit"
+        <button [disabled]="submittingForm || resourceForm.invalid" type="submit"
             class="btn btn-primary btn-lg">Salvar</button>
     </div>
 

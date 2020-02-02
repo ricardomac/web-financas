@@ -1,13 +1,11 @@
-import { Component, OnInit, AfterContentChecked } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
+import { Component, OnInit, Injector} from '@angular/core';
+import { Validators } from "@angular/forms"
 import { ActivatedRoute, Router } from "@angular/router"
+
+import { BaseResourceFormComponent } from 'src/app/shared/components/base-resource-form/base-resource-form.component';
 
 import { Lancamento } from "../shared/lancamento.model"
 import { LancamentoService } from '../shared/lancamento.service';
-
-import { switchMap } from 'rxjs/operators';
-
-import toastr from "toastr"
 import { Categoria } from '../../categorias/shared/categoria.model';
 import { CategoriaService } from '../../categorias/shared/categoria.service';
 
@@ -16,14 +14,8 @@ import { CategoriaService } from '../../categorias/shared/categoria.service';
   templateUrl: './formulario-lancamento.component.html',
   styleUrls: ['./formulario-lancamento.component.css']
 })
-export class FormularioLancamentosComponent implements OnInit, AfterContentChecked {
+export class FormularioLancamentosComponent extends BaseResourceFormComponent<Lancamento> implements OnInit {
 
-  acaoAtual: string;
-  lancamentoForm: FormGroup;
-  tituloPagina: string;
-  serverErrorMessages: Array<string> = null;
-  submittingForm: boolean = false;
-  lancamento: Lancamento = new Lancamento();
   categorias: Array<Categoria>;
 
   imaskConfig = {
@@ -47,32 +39,16 @@ export class FormularioLancamentosComponent implements OnInit, AfterContentCheck
   };
 
   constructor(
-    private lancamentoService: LancamentoService,
-    private categoriaService: CategoriaService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private formBuilder: FormBuilder
-  ) { }
+    protected lancamentoService: LancamentoService,
+    protected categoriaService: CategoriaService,
+    protected injector: Injector
+  ) {
+    super(injector, new Lancamento(), lancamentoService, Lancamento.fromJson);
+   }
 
   ngOnInit() {
-    this.setAcaoAtual();
-    this.buildFormLancamento();
-    this.loadLancamento();
     this.loadCategorias();
-  }
-
-  ngAfterContentChecked() {
-    this.setTituloPagina();
-  }
-
-
-  submitForm() {
-    this.submittingForm = true;
-    if (this.acaoAtual == 'new') {
-      this.salvarLancamento()
-    } else {
-      this.atualizarLancamento();
-    }
+    super.ngOnInit();
   }
 
   get typeOptions(): Array<any> {
@@ -84,19 +60,8 @@ export class FormularioLancamentosComponent implements OnInit, AfterContentCheck
     })
   }
 
-
-  // Métodos privados
-
-  private setAcaoAtual() {
-    if (this.route.snapshot.url[0].path == "new") {
-      this.acaoAtual = "new";
-    } else {
-      this.acaoAtual = "edit";
-    }
-  }
-
-  private buildFormLancamento() {
-    this.lancamentoForm = this.formBuilder.group({
+  protected buildFormResource() {
+    this.resourceForm = this.formBuilder.group({
       id: [null],
       nome: [null, [Validators.required, Validators.minLength(2)]],
       descricao: [null],
@@ -108,72 +73,19 @@ export class FormularioLancamentosComponent implements OnInit, AfterContentCheck
     })
   }
 
-  private loadLancamento() {
-    if (this.acaoAtual == "edit") {
-      this.route.paramMap.pipe(
-        switchMap(params => this.lancamentoService.Buscar(+params.get("id")))
-      )
-        .subscribe(
-          (lancamento) => {
-            this.lancamento = lancamento;
-            this.lancamentoForm.patchValue(lancamento)
-          },
-          (error) => alert("Ocorreu um erro no servidor, tente mais tarde.")
-        )
-    }
-  }
-
   private loadCategorias() {
     this.categoriaService.Listar().subscribe(
       categorias => this.categorias = categorias
     );
   }
 
-  private setTituloPagina() {
-    if (this.acaoAtual == 'new') {
-      this.tituloPagina = 'Cadastro de Novo Lançamento'
-    } else {
-      const nomeLancamento = this.lancamento.nome || "";
-      this.tituloPagina = "Editando Lançamento: " + nomeLancamento;
-    }
+  protected tituloPaginaCriar(): string {
+    return "Cadastro de Novo Lançamento";
   }
 
-  private salvarLancamento() {
-    const lancamento: Lancamento = Lancamento.fromJson(this.lancamentoForm.value);
-
-    this.lancamentoService.Salvar(lancamento)
-      .subscribe(
-        lancamento => this.actionsForSuccess(lancamento),
-        error => this.actionsForError(error)
-      )
+  protected tituloPaginaEdicao(): string {
+    const nomeLancamento = this.resource.nome || "";
+    return "Editando Lançamento: " + nomeLancamento;
   }
-
-  private atualizarLancamento() {
-    const lancamento: Lancamento = Lancamento.fromJson(this.lancamentoForm.value);
-    this.lancamentoService.Atualizar(lancamento)
-      .subscribe(
-        lancamento => this.actionsForSuccess(lancamento),
-        error => this.actionsForError(error)
-      )
-  }
-
-  private actionsForSuccess(lancamento: Lancamento) {
-    toastr.success("Solicitação processada com sucesso!");
-
-    this.router.navigateByUrl(`lancamentos`, { skipLocationChange: true })
-      .then(() => this.router.navigate(["lancamentos", lancamento.id, "editar"]))
-  }
-
-  private actionsForError(error) {
-    toastr.error("Ocorreu um erro ao processar a sua solicitação!");
-    this.submittingForm = false;
-
-    if (error.status === 422) {
-      this.serverErrorMessages = JSON.parse(error.body).errors;
-    } else {
-      this.serverErrorMessages = ["Falha na comunicação com o servidor. Por favor, tente mais tarde."]
-    }
-  }
-
 
 }
