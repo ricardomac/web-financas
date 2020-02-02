@@ -26,7 +26,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let lancamento of lancamentos">
+        <tr *ngFor="let lancamento of resources">
             <td>
                 <strong>{{lancamento.nome}}</strong><br>
                 <small class="text-success">{{lancamento.data}}</small><br>
@@ -36,7 +36,7 @@
                 {{lancamento.categoria.nome}}
             </td>
             <td class="text-right">
-                <strong [ngClass]="{'text-success': lancamento.tipo == 'receita', 
+                <strong [ngClass]="{'text-success': lancamento.tipo == 'receita',
                             'text-danger': lancamento.tipo == 'despesa'}">
                     {{lancamento.valor}}
                 </strong><br>
@@ -46,7 +46,7 @@
             </td>
             <td class="text-center">
                 <a [routerLink]="[lancamento.id, 'editar']" class="btn btn-outline-info btn-sm mr-2">Editar</a>
-                <button (click)="DeletarLancamento(lancamento)" class="btn btn-outline-danger btn-sm">Excluir</button>
+                <button (click)="DeletarResource(lancamento)" class="btn btn-outline-danger btn-sm">Excluir</button>
             </td>
         </tr>
     </tbody>

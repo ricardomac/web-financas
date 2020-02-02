@@ -1,33 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Lancamento } from '../shared/lancamento.model';
 import { LancamentoService } from '../shared/lancamento.service';
-
+import { BaseResourceListComponent } from 'src/app/shared/components/base-resource-list/base-resource-list.component';
 
 @Component({
   selector: 'app-lista-de-lancamentos',
   templateUrl: './lista-de-lancamentos.component.html',
   styleUrls: ['./lista-de-lancamentos.component.css']
 })
-export class ListaDeLancamentosComponent implements OnInit {
+export class ListaDeLancamentosComponent extends BaseResourceListComponent<Lancamento>{
 
-  lancamentos: Array<Lancamento> = [];
-
-  constructor(private lancamentoService: LancamentoService) { }
-
-  ngOnInit() {
-    this.lancamentoService.Listar().subscribe(
-      lancamentos => this.lancamentos = lancamentos.sort((a, b) => b.id - a.id),
-      error => alert('Erro ao carregar a lista')
-    )
-  }
-
-  DeletarLancamento(lancamento) {
-    if (confirm('Deseja realmente excluir essa lancamento?'))
-      this.lancamentoService.Excluir(lancamento.id).subscribe(
-        () => this.lancamentos = this.lancamentos.filter(element => element != lancamento),
-        () => alert("Erro ao tentar excluir")
-      )
-  }
+  constructor(protected lancamentoService: LancamentoService) {
+    super(lancamentoService);
+   }
 
 }
