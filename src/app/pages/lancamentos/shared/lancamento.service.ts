@@ -1,7 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { flatMap } from 'rxjs/operators'
+import { flatMap, catchError } from 'rxjs/operators'
 
 import { BaseResourceService } from 'src/app/shared/services/base-resource.service';
 
@@ -17,37 +17,25 @@ export class LancamentoService extends BaseResourceService<Lancamento> {
         protected injector: Injector,
         private categoriaService: CategoriaService
     ) {
-        super("api/lancamentos", injector);
+        super("api/lancamentos", injector, Lancamento.fromJson);
     }
 
 
     Salvar(lancamento: Lancamento): Observable<Lancamento> {
-        return this.categoriaService.Buscar(lancamento.categoriaId).pipe(
-            flatMap(categoria => {
-                lancamento.categoria = categoria;
-                return super.Salvar(lancamento);
-            })
-        )
+        return this.setCategoriaEnviarServer(lancamento, super.Salvar.bind(this))
     }
 
     Atualizar(lancamento: Lancamento): Observable<Lancamento> {
+        return this.setCategoriaEnviarServer(lancamento, super.Atualizar.bind(this))
+    }
+
+    private setCategoriaEnviarServer(lancamento: Lancamento, sendFn: any): Observable<Lancamento> {
         return this.categoriaService.Buscar(lancamento.categoriaId).pipe(
             flatMap(categoria => {
                 lancamento.categoria = categoria;
-                return super.Atualizar(lancamento);
-            })
+                return sendFn(lancamento);
+            }),
+            catchError(this.handleError)
         )
     }
-
-    // Métodos protected
-    protected jsonDadosToResources(jsonDados: Array<any>): Array<Lancamento> {
-        const lancamentos: Array<Lancamento> = [];
-        jsonDados.forEach(element => lancamentos.push(Object.assign(new Lancamento(), element)));
-        return lancamentos
-    }
-
-    protected jsonDadosToResource(jsonDados: any): Lancamento {
-        return jsonDados as Lancamento;
-    }
-
 }

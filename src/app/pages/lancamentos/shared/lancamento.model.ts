@@ -22,6 +22,10 @@ export class Lancamento extends BaseResourceModel {
         receita: 'Receita'
     }
 
+    static fromJson(jsonData: any): Lancamento {
+        return Object.assign(new Lancamento(), jsonData);
+    }
+
     get statusPagamento(): string {
         return this.pago ? 'Pago' : 'Pedente';
     }

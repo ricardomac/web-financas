@@ -139,7 +139,7 @@ export class FormularioLancamentosComponent implements OnInit, AfterContentCheck
   }
 
   private salvarLancamento() {
-    const lancamento: Lancamento = Object.assign(new Lancamento(), this.lancamentoForm.value);
+    const lancamento: Lancamento = Lancamento.fromJson(this.lancamentoForm.value);
 
     this.lancamentoService.Salvar(lancamento)
       .subscribe(
@@ -149,7 +149,7 @@ export class FormularioLancamentosComponent implements OnInit, AfterContentCheck
   }
 
   private atualizarLancamento() {
-    const lancamento: Lancamento = Object.assign(new Lancamento(), this.lancamentoForm.value);
+    const lancamento: Lancamento = Lancamento.fromJson(this.lancamentoForm.value);
     this.lancamentoService.Atualizar(lancamento)
       .subscribe(
         lancamento => this.actionsForSuccess(lancamento),
